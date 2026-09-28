@@ -35,6 +35,8 @@ import {
 import OrderDeleteModal from "./OrderDeleteModal";
 import CjFulfillConfirmModal from "./CjFulfillConfirmModal";
 import BulkFulfillModal from "./BulkFulfillModal";
+import OrderBulkBar from "./OrderBulkBar";
+import BulkOrderDeleteModal from "./BulkOrderDeleteModal";
 
 const CJ_STATUS_CONFIG = {
   submitted: {
@@ -142,6 +144,7 @@ const OrderData = () => {
   const deleteModalRef = useRef(null);
   const cjFulfillModalRef = useRef(null);
   const bulkFulfillModalRef = useRef(null);
+  const bulkDeleteModalRef = useRef(null);
 
   const handleOpenSingleFulfill = (order) => {
     setOrderToFulfillCj(order);
@@ -150,6 +153,10 @@ const OrderData = () => {
 
   const handleOpenBulkFulfill = () => {
     bulkFulfillModalRef.current?.showModal();
+  };
+
+  const handleOpenBulkDelete = () => {
+    bulkDeleteModalRef.current?.showModal();
   };
 
   const handleOpenDelete = (order) => {
@@ -448,53 +455,15 @@ const OrderData = () => {
         </div>
       </div>
 
-      {/* Floating / Sticky Bulk Action Bar */}
-      {selectedOrderIds.length > 0 && (
-        <div className="sticky top-20 z-20 bg-zinc-900 text-white p-3.5 sm:px-5 sm:py-3 rounded-2xl shadow-xl flex items-center justify-between gap-3 flex-wrap animate-fade-in border border-zinc-800">
-          <div className="flex items-center gap-2.5">
-            <span className="badge badge-sm badge-success font-mono font-bold text-xs">
-              {selectedOrderIds.length}
-            </span>
-            <span className="text-xs font-semibold text-zinc-100">
-              order{selectedOrderIds.length > 1 ? "s" : ""} selected
-            </span>
-            <span className="text-zinc-600 hidden sm:inline">·</span>
-            <span className="text-xs text-zinc-400 hidden sm:inline">
-              <span className="font-semibold text-teal-400">
-                {unfulfilledSelectedCount}
-              </span>{" "}
-              unfulfilled with CJ
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleSelectUnfulfilled}
-              className="btn btn-xs btn-ghost text-zinc-300 hover:text-white rounded-lg text-xs"
-            >
-              Select Unfulfilled Only
-            </button>
-
-            <button
-              type="button"
-              onClick={handleOpenBulkFulfill}
-              className="btn btn-xs btn-main rounded-xl text-xs font-bold gap-1.5 shadow-sm px-3"
-            >
-              <LuSparkles className="w-3.5 h-3.5" />
-              Bulk Fulfill with CJ ({unfulfilledSelectedCount})
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setSelectedOrderIds([])}
-              className="btn btn-xs btn-ghost text-zinc-400 hover:text-rose-400 rounded-lg text-xs"
-            >
-              Deselect All
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Floating Bulk Action Bar styled matching ProductBulkBar */}
+      <OrderBulkBar
+        selectedCount={selectedOrderIds.length}
+        unfulfilledCount={unfulfilledSelectedCount}
+        onClearSelection={() => setSelectedOrderIds([])}
+        onBulkDelete={handleOpenBulkDelete}
+        onBulkFulfill={handleOpenBulkFulfill}
+        onSelectUnfulfilled={handleSelectUnfulfilled}
+      />
 
       {/* 3. Orders Table */}
       <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-xs overflow-hidden">
@@ -694,7 +663,7 @@ const OrderData = () => {
                             </div>
                           )}
                           <div className="min-w-0">
-                            <p className="text-xs font-medium text-zinc-800 truncate max-w-[160px]">
+                            <p className="text-xs font-medium text-zinc-800 truncate max-w-40">
                               {firstProduct?.title || "Item"}
                             </p>
                             <span className="text-[11px] text-zinc-400 font-medium">
@@ -976,6 +945,15 @@ const OrderData = () => {
         ref={bulkFulfillModalRef}
         selectedOrders={selectedOrders}
         onSuccess={() => {
+          setSelectedOrderIds([]);
+        }}
+      />
+
+      {/* Bulk Order Delete Modal */}
+      <BulkOrderDeleteModal
+        modalRef={bulkDeleteModalRef}
+        selectedOrders={selectedOrders}
+        onDeleted={() => {
           setSelectedOrderIds([]);
         }}
       />

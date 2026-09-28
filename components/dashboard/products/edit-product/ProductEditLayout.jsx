@@ -923,7 +923,7 @@ export default function ProductEditLayout({
                 )}
 
                 {descEditorMode === "preview" && (
-                  <div className="p-4 rounded-xl bg-base-200/40 border border-base-200 min-h-[200px] max-h-96 overflow-y-auto text-xs prose prose-sm max-w-none text-base-content/90">
+                  <div className="p-4 rounded-xl bg-base-200/40 border border-base-200 min-h-50 max-h-96 overflow-y-auto text-xs prose prose-sm max-w-none text-base-content/90">
                     {watchedDescription ? (
                       <div
                         dangerouslySetInnerHTML={{ __html: watchedDescription }}

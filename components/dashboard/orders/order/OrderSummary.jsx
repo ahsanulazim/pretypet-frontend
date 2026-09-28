@@ -16,7 +16,9 @@ const OrderSummary = ({ order }) => {
   const [copiedSession, setCopiedSession] = useState(false);
 
   const subtotal = Number(order?.subtotal ?? order?.total ?? 0);
-  const shippingCost = Number(order?.shippingCost ?? order?.shipping?.price ?? 0);
+  const shippingCost = Number(
+    order?.shippingCost ?? order?.shipping?.price ?? 0,
+  );
   const discount = Number(order?.discount ?? 0);
   const total = Number(order?.total ?? subtotal + shippingCost);
 
@@ -38,7 +40,9 @@ const OrderSummary = ({ order }) => {
           <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100">
             <LuReceipt className="w-4 h-4" />
           </div>
-          <h3 className="font-bold text-base text-zinc-900">Financial Summary</h3>
+          <h3 className="font-bold text-base text-zinc-900">
+            Financial Summary
+          </h3>
         </div>
 
         <span
@@ -66,14 +70,17 @@ const OrderSummary = ({ order }) => {
         {/* Subtotal */}
         <div className="flex items-center justify-between text-zinc-600">
           <span>Items Subtotal</span>
-          <span className="font-semibold text-zinc-800">${subtotal.toFixed(2)}</span>
+          <span className="font-semibold text-zinc-800">
+            ${subtotal.toFixed(2)}
+          </span>
         </div>
 
         {/* Shipping */}
         <div className="flex items-center justify-between text-zinc-600">
           <span className="flex items-center gap-1.5">
             <LuTruck className="w-3.5 h-3.5 text-zinc-400" />
-            Shipping Fee {order?.shipping?.name ? `(${order.shipping.name})` : ""}
+            Shipping Fee{" "}
+            {order?.shipping?.name ? `(${order.shipping.name})` : ""}
           </span>
           <span className="font-semibold text-zinc-800">
             {shippingCost > 0 ? `$${shippingCost.toFixed(2)}` : "Free Shipping"}
@@ -91,23 +98,24 @@ const OrderSummary = ({ order }) => {
         {/* Grand Total */}
         <div className="pt-3 border-t border-zinc-100 flex items-center justify-between text-base">
           <span className="font-bold text-zinc-900">Grand Total</span>
-          <span className="font-black text-xl text-main">${total.toFixed(2)}</span>
+          <span className="font-black text-xl text-main">
+            ${total.toFixed(2)}
+          </span>
         </div>
 
         {/* Payment Metadata Box */}
         <div className="mt-4 pt-4 border-t border-zinc-100/80 bg-zinc-50/70 -mx-5 -mb-5 p-5 space-y-2 text-xs text-zinc-500 rounded-b-2xl">
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-1 text-zinc-600">
-              <LuCreditCard className="w-3.5 h-3.5 text-zinc-400" /> Payment Method:
+              <LuCreditCard className="w-3.5 h-3.5 text-zinc-400" /> Payment
+              Method:
             </span>
             <span className="font-semibold text-zinc-800">
-              {order?.paymentDetails ? (
-                order.paymentDetails.wallet
+              {order?.paymentDetails
+                ? order.paymentDetails.wallet
                   ? `${order.paymentDetails.wallet === "apple_pay" ? "Apple Pay" : order.paymentDetails.wallet === "google_pay" ? "Google Pay" : order.paymentDetails.wallet} (${order.paymentDetails.brand?.toUpperCase()} ••${order.paymentDetails.last4})`
                   : `${order.paymentDetails.brand ? order.paymentDetails.brand.toUpperCase() : "Card"} •••• ${order.paymentDetails.last4 || ""}`
-              ) : (
-                "Credit / Debit Card"
-              )}
+                : "Credit / Debit Card"}
             </span>
           </div>
 
@@ -149,7 +157,8 @@ const OrderSummary = ({ order }) => {
                 <button
                   type="button"
                   onClick={() => {
-                    const id = order?.stripePaymentIntentId || order?.stripeSessionId;
+                    const id =
+                      order?.stripePaymentIntentId || order?.stripeSessionId;
                     if (id) {
                       navigator.clipboard.writeText(id);
                       setCopiedSession(true);

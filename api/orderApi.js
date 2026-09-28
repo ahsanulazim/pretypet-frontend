@@ -76,6 +76,16 @@ export const deleteOrder = async (id) => {
 };
 
 /**
+ * Bulk delete orders by array of IDs
+ */
+export const bulkDeleteOrders = async (orderIds) => {
+  const res = await api.delete("/orders/bulk-delete", {
+    data: { orderIds },
+  });
+  return res.data;
+};
+
+/**
  * Get customer orders with pagination & status filter
  */
 export const getMyOrders = async (params = {}) => {
@@ -114,4 +124,3 @@ export const bulkFulfillOrdersWithCj = async (orderIds) => {
   const res = await api.post("/orders/bulk-fulfill-cj", { orderIds });
   return res.data;
 };
-

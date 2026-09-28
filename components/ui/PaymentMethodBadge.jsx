@@ -3,7 +3,11 @@
 import { formatPaymentMethod } from "@/utils/paymentUtils";
 import { LuCreditCard, LuReceipt } from "react-icons/lu";
 
-export const PaymentMethodBadge = ({ order, showReceipt = false, className = "" }) => {
+export const PaymentMethodBadge = ({
+  order,
+  showReceipt = false,
+  className = "",
+}) => {
   const payment = formatPaymentMethod(order);
 
   return (
