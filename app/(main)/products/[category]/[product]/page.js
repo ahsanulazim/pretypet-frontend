@@ -1,18 +1,25 @@
-import api from "@/axios/axiosInstance";
 import ShopNav from "@/components/product/ShopNav";
 import ProductDetails from "@/components/single-product/ProductDetails";
+import { getCategoryProducts, getProductBySlug } from "@/lib/productData";
 import { notFound } from "next/navigation";
+
+// Serve product pages from the static cache and refresh them in the
+// background, instead of rendering (and calling the API) on every request.
+// Keep this number in sync with PRODUCT_REVALIDATE in lib/productData.js.
+export const revalidate = 60;
+
+// No pages are built ahead of time; each product page is generated on its
+// first visit and cached from then on.
+export async function generateStaticParams() {
+  return [];
+}
 
 export const generateMetadata = async ({ params }) => {
   try {
     const { product } = await params;
 
-    const res = await api.get("/products/getProductBySlug", {
-      params: { slug: product },
-    });
-
-    const productData = res?.data;
-    if (!productData?.product) {
+    const productData = await getProductBySlug(product);
+    if (!productData) {
       return { title: "Product Not Found | PretyPet" };
     }
 
@@ -60,18 +67,12 @@ export const generateMetadata = async ({ params }) => {
 const page = async ({ params }) => {
   const { product, category } = await params;
 
-  let productData = null;
-  try {
-    const res = await api.get("/products/getProductBySlug", {
-      params: { slug: product },
-    });
-    productData = res?.data;
-  } catch (error) {
-    console.error("Error fetching product:", error);
-    notFound();
-  }
+  // Start both requests together. The category in the URL is almost always
+  // the product's own category, so related products rarely need a second trip.
+  const relatedFromUrlPromise = getCategoryProducts(category);
+  const productData = await getProductBySlug(product);
 
-  if (!productData?.product) {
+  if (!productData) {
     notFound();
   }
 
@@ -92,24 +93,17 @@ const page = async ({ params }) => {
       : category) ||
     "";
 
-  // Fetch related products from the same category
-  let relatedProducts = [];
-  try {
-    const catQuery =
-      currentCategory?.slug || currentProduct.category || category;
-    if (catQuery) {
-      const relatedRes = await api.get("/products/getProductsByCategory", {
-        params: { category: catQuery, limit: 8 },
-      });
-      const currentId = currentProduct._id?.toString() || currentProduct._id;
-      const list = relatedRes?.data?.products || [];
-      relatedProducts = list
-        .filter((p) => (p._id?.toString() || p._id) !== currentId)
-        .slice(0, 4);
-    }
-  } catch (error) {
-    console.error("Error fetching related products:", error);
-  }
+  const relatedCategory =
+    currentCategory?.slug || currentProduct.category || category;
+  const relatedList =
+    relatedCategory === category
+      ? await relatedFromUrlPromise
+      : await getCategoryProducts(relatedCategory);
+
+  const currentId = currentProduct._id?.toString() || currentProduct._id;
+  const relatedProducts = relatedList
+    .filter((p) => (p._id?.toString() || p._id) !== currentId)
+    .slice(0, 4);
 
   return (
     <>

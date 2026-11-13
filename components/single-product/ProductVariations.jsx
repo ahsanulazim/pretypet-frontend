@@ -147,6 +147,8 @@ export default function ProductVariations({
                       <img
                         src={image}
                         alt={formatLabel(value)}
+                        loading="lazy"
+                        decoding="async"
                         className="h-10 w-10 rounded-lg object-contain bg-zinc-50 border border-zinc-100"
                       />
                     )}

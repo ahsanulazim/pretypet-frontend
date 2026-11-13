@@ -95,7 +95,7 @@ export default function ProductGallery({ images, title, discount = 0 }) {
                   height={800}
                   src={image}
                   alt={`${title} - view ${index + 1}`}
-                  priority={index === 0}
+                  preload={index === 0}
                   unoptimized
                   className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
                 />
