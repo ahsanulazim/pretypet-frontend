@@ -13,9 +13,12 @@ import {
 } from "react-icons/lu";
 
 export const metadata = {
-  title: "Privacy Policy | PrettyPet",
+  title: "Privacy Policy | PretyPet",
   description:
-    "Learn how PrettyPet collects, uses, protects, and handles your personal information and pet data with transparency and high-grade security.",
+    "Learn how PretyPet collects, uses, protects, and handles your personal information and pet data with transparency and high-grade security.",
+  alternates: {
+    canonical: "/privacy-policy",
+  },
 };
 
 const sections = [

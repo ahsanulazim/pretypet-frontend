@@ -13,6 +13,7 @@ import {
 } from "react-icons/lu";
 import { verifyOrderPayment } from "@/api/orderApi";
 import { useCart } from "@/context/CartContext";
+import { event as trackEvent } from "@/lib/fpixel";
 
 function PaymentSuccessContent() {
   const searchParams = useSearchParams();
@@ -30,22 +31,107 @@ function PaymentSuccessContent() {
   );
   const [error, setError] = useState(null);
   const hasProcessed = useRef(false);
+  const hasTrackedPurchase = useRef(false);
 
   useEffect(() => {
     if (hasProcessed.current) return;
     hasProcessed.current = true;
 
-    // Clear cart immediately on successful return from checkout
-    clearCart();
-
     const identifier = paymentIntentId || sessionId;
 
     if (identifier || orderId) {
-      verifyOrderPayment(identifier || { order_id: orderId, order_number: orderNumberParam }, orderId)
+      verifyOrderPayment(
+        identifier || { order_id: orderId, order_number: orderNumberParam },
+        orderId,
+      )
         .then((res) => {
           if (res?.success && res?.order) {
             setOrder(res.order);
+
+            // Verify Stripe has actually confirmed payment
+            const redirectStatus = searchParams?.get("redirect_status");
+            const isFailedStatus =
+              redirectStatus === "failed" || redirectStatus === "canceled";
+
+            const isStripePaid =
+              !isFailedStatus &&
+              (res.paid === true ||
+                res.order.paymentStatus === "paid" ||
+                Boolean(res.order.paidAt));
+
+            if (isStripePaid && !hasTrackedPurchase.current) {
+              const orderIdentifier =
+                res.order.orderNumber ||
+                res.order._id ||
+                orderId ||
+                paymentIntentId;
+              const sessionKey = `meta_purchase_tracked_${orderIdentifier}`;
+
+              const alreadyTrackedInSession =
+                typeof window !== "undefined" &&
+                sessionStorage.getItem(sessionKey);
+
+              if (!alreadyTrackedInSession) {
+                hasTrackedPurchase.current = true;
+
+                if (typeof window !== "undefined") {
+                  sessionStorage.setItem(sessionKey, "true");
+                }
+
+                // Clear cart once payment is confirmed by Stripe
+                clearCart();
+
+                const productsList =
+                  Array.isArray(res.order.products) && res.order.products.length > 0
+                    ? res.order.products
+                    : Array.isArray(res.order.items)
+                      ? res.order.items
+                      : [];
+
+                const customer = res.order.customer || {};
+                trackEvent(
+                  "Purchase",
+                  {
+                    content_ids: productsList
+                      .map(
+                        (i) =>
+                          i.productId ||
+                          i._id ||
+                          i.product?._id ||
+                          i.product,
+                      )
+                      .filter(Boolean),
+                    content_type: "product",
+                    value: Number(Number(res.order.total || 0).toFixed(2)),
+                    currency: res.order.currency || "USD",
+                    num_items:
+                      productsList.reduce(
+                        (sum, i) => sum + (Number(i.quantity) || 1),
+                        0,
+                      ) || 1,
+                  },
+                  orderIdentifier,
+                  {
+                    email: customer.email,
+                    phone: customer.phone,
+                    firstName:
+                      customer.firstName ||
+                      (customer.name ? customer.name.split(" ")[0] : ""),
+                    lastName:
+                      customer.lastName ||
+                      (customer.name
+                        ? customer.name.split(" ").slice(1).join(" ")
+                        : ""),
+                    city: customer.city,
+                    state: customer.state,
+                    zip: customer.zip,
+                    country: customer.country || "us",
+                  },
+                );
+              }
+            }
           }
+
         })
         .catch((err) => {
           console.error("Verification error:", err);
@@ -55,7 +141,7 @@ function PaymentSuccessContent() {
           setLoading(false);
         });
     }
-  }, [sessionId, paymentIntentId, orderId, orderNumberParam, clearCart]);
+  }, [sessionId, paymentIntentId, orderId, orderNumberParam, searchParams, clearCart]);
 
   const displayOrderNumber =
     order?.orderNumber ||

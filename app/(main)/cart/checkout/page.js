@@ -11,18 +11,33 @@ import { buildStripeElementsOptions } from "@/lib/stripeTheme";
 import ShippingForm from "@/components/cart/checkout/ShippingForm";
 import Overview from "@/components/cart/Overview";
 import Spinner from "@/components/skeleton/Spinner";
+import { event as trackEvent } from "@/lib/fpixel";
 
 const CheckoutPage = () => {
   const router = useRouter();
   const { cart, loaded, cartGrandTotal } = useCart();
   const [isPending, setIsPending] = useState(false);
   const checkoutRef = useRef(null);
+  const hasTrackedCheckout = useRef(false);
 
   useEffect(() => {
     if (loaded && cart.length === 0) {
       router.push("/cart");
     }
   }, [loaded, cart, router]);
+
+  useEffect(() => {
+    if (loaded && cart.length > 0 && !hasTrackedCheckout.current) {
+      hasTrackedCheckout.current = true;
+      trackEvent("InitiateCheckout", {
+        content_ids: cart.map((item) => item.productId).filter(Boolean),
+        content_type: "product",
+        num_items: cart.reduce((total, item) => total + (item.quantity || 1), 0),
+        value: Number(cartGrandTotal.toFixed(2)),
+        currency: "USD",
+      });
+    }
+  }, [loaded, cart, cartGrandTotal]);
 
   const stripeOptions = useMemo(
     () => buildStripeElementsOptions(cartGrandTotal),

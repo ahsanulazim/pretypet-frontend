@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState, useCallback } from "react";
+import { event as trackEvent } from "@/lib/fpixel";
 
 const CartContext = createContext(null);
 
@@ -251,6 +252,14 @@ export const CartProvider = ({ children }) => {
     if (!existingItem) {
       setCart((currentCart) => [...currentCart, cartItem]);
 
+      trackEvent("AddToCart", {
+        content_name: cartItem.title,
+        content_ids: [cartItem.productId],
+        content_type: "product",
+        value: Number((cartItem.finalPrice * numericQuantity).toFixed(2)),
+        currency: "USD",
+      });
+
       return {
         success: true,
         message: "Added to cart",
@@ -289,6 +298,14 @@ export const CartProvider = ({ children }) => {
           : item,
       ),
     );
+
+    trackEvent("AddToCart", {
+      content_name: cartItem.title,
+      content_ids: [cartItem.productId],
+      content_type: "product",
+      value: Number((cartItem.finalPrice * numericQuantity).toFixed(2)),
+      currency: "USD",
+    });
 
     return {
       success: true,

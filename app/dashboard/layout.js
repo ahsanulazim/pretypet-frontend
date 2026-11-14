@@ -18,6 +18,7 @@ import {
   LuTruck,
   LuUser,
   LuSparkles,
+  LuBell,
 } from "react-icons/lu";
 
 const Layout = ({ children }) => {
@@ -193,6 +194,17 @@ const Layout = ({ children }) => {
                 {/* Home icon */}
                 <LuUser className="my-1.5 inline-block size-4" />
                 <span className="is-drawer-close:hidden">Users</span>
+              </ActiveLink>
+            </li>
+
+            <li>
+              <ActiveLink
+                href="/dashboard/notifications"
+                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                dataTip="Notifications"
+              >
+                <LuBell className="my-1.5 inline-block size-4" />
+                <span className="is-drawer-close:hidden">Notifications</span>
               </ActiveLink>
             </li>
           </ul>
