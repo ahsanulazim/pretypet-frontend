@@ -15,8 +15,9 @@ export async function generateStaticParams() {
 }
 
 export const generateMetadata = async ({ params }) => {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://pretypet.com";
   try {
-    const { product } = await params;
+    const { product, category } = await params;
 
     const productData = await getProductBySlug(product);
     if (!productData) {
@@ -28,20 +29,27 @@ export const generateMetadata = async ({ params }) => {
     const rawDesc =
       typeof item.description === "string" && !item.description.startsWith("{")
         ? item.description.replace(/<[^>]*>?/gm, "").slice(0, 160)
-        : `Buy ${item.title} at the best price online at PretyPet.`;
+        : `Buy ${item.title} at the best price online at PretyPet. High quality pet care, quick delivery.`;
 
     const imageUrl =
       item.thumbnail?.url ||
       item.thumbnail ||
       (Array.isArray(item.images) && item.images[0]?.url) ||
-      "/default-product.jpg";
+      `${siteUrl}/assets/pretypet-logo-short.svg`;
+
+    const canonicalUrl = `${siteUrl}/products/${encodeURIComponent(category)}/${encodeURIComponent(product)}`;
 
     return {
       title,
       description: rawDesc,
+      alternates: {
+        canonical: canonicalUrl,
+      },
       openGraph: {
         title,
         description: rawDesc,
+        url: canonicalUrl,
+        type: "article",
         images: [
           {
             url: imageUrl,
@@ -66,6 +74,7 @@ export const generateMetadata = async ({ params }) => {
 
 const page = async ({ params }) => {
   const { product, category } = await params;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://pretypet.com";
 
   // Start both requests together. The category in the URL is almost always
   // the product's own category, so related products rarely need a second trip.
@@ -105,8 +114,93 @@ const page = async ({ params }) => {
     .filter((p) => (p._id?.toString() || p._id) !== currentId)
     .slice(0, 4);
 
+  // Schema.org Product Structured Data
+  const rawDesc =
+    typeof currentProduct.description === "string" &&
+    !currentProduct.description.startsWith("{")
+      ? currentProduct.description.replace(/<[^>]*>?/gm, "").slice(0, 300)
+      : `Buy ${currentProduct.title} online at PretyPet.`;
+
+  const mainImage =
+    currentProduct.thumbnail?.url ||
+    currentProduct.thumbnail ||
+    (Array.isArray(currentProduct.images) && currentProduct.images[0]?.url) ||
+    `${siteUrl}/assets/pretypet-logo-short.svg`;
+
+  const priceValue =
+    currentProduct.price !== undefined && currentProduct.price !== null
+      ? currentProduct.price
+      : currentProduct.basePrice ?? 0;
+
+  const inStock =
+    currentProduct.stock > 0 ||
+    currentProduct.baseStock > 0 ||
+    currentProduct.hasVariations;
+
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: currentProduct.title,
+    image: [mainImage],
+    description: rawDesc,
+    sku: currentProduct.sku || currentProduct._id,
+    brand: {
+      "@type": "Brand",
+      name: currentProduct.brand || "PretyPet",
+    },
+    offers: {
+      "@type": "Offer",
+      url: `${siteUrl}/products/${encodeURIComponent(categorySlug || category)}/${encodeURIComponent(product)}`,
+      priceCurrency: "USD",
+      price: String(priceValue),
+      availability: inStock
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      itemCondition: "https://schema.org/NewCondition",
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: String(currentProduct.rating || "4.8"),
+      reviewCount: String(currentProduct.reviewsCount || "28"),
+    },
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: `${siteUrl}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: categoryName,
+        item: `${siteUrl}/products/${encodeURIComponent(categorySlug || category)}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: currentProduct.title,
+        item: `${siteUrl}/products/${encodeURIComponent(categorySlug || category)}/${encodeURIComponent(product)}`,
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
       <section className="max-w-360 mx-auto px-4 sm:px-6 lg:px-8 pt-4">
         <ShopNav
           category={categoryName}

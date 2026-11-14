@@ -1,83 +1,97 @@
-"use client";
-import { getProductsByCategory } from "@/api/productApi";
-import ShopNav from "@/components/product/ShopNav";
-import ProductHeader from "@/components/shop/ProductHeader";
-import ProductSidebar from "@/components/shop/ProductSidebar";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useParams, useSearchParams } from "next/navigation";
+import api from "@/axios/axiosInstance";
+import CategoryProductView from "@/components/shop/CategoryProductView";
 
-const page = () => {
-  const { category } = useParams();
+export async function generateMetadata({ params }) {
+  const { category } = await params;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://pretypet.com";
 
-  const searchParams = useSearchParams();
-  const page = Number(searchParams.get("page")) || 1;
-  const limit = Number(searchParams.get("limit")) || 12;
-  const minPrice = searchParams.get("minPrice") || "";
-  const maxPrice = searchParams.get("maxPrice") || "";
-  const brand = searchParams.get("brand") || "";
-  const inStock = searchParams.get("inStock") === "true";
-  const onSale = searchParams.get("onSale") === "true";
-  const sort = searchParams.get("sort") || "newest";
+  try {
+    const res = await api.get("/products/getProductsByCategory", {
+      params: { category, limit: 1 },
+    });
+    const categoryData = res?.data?.category;
 
-  const queryParams = {
-    page,
-    limit,
-    minPrice,
-    maxPrice,
-    brand,
-    inStock,
-    onSale,
-    sort,
+    const formattedName =
+      categoryData?.name ||
+      (category
+        ? category.charAt(0).toUpperCase() + category.slice(1).replace(/-/g, " ")
+        : "Category");
+
+    const title = `${formattedName} - Pet Supplies & Accessories | PretyPet`;
+    const description =
+      categoryData?.description ||
+      `Shop top-rated ${formattedName} products at PretyPet. High quality food, toys, and accessories for your beloved pets.`;
+
+    return {
+      title,
+      description,
+      alternates: {
+        canonical: `${siteUrl}/products/${category}`,
+      },
+      openGraph: {
+        title,
+        description,
+        url: `${siteUrl}/products/${category}`,
+        type: "website",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+      },
+    };
+  } catch (error) {
+    console.error("Error generating category metadata:", error?.message);
+    return {
+      title: "Pet Products | PretyPet",
+      alternates: {
+        canonical: `${siteUrl}/products/${category}`,
+      },
+    };
+  }
+}
+
+export default async function CategoryPage({ params }) {
+  const { category } = await params;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://pretypet.com";
+
+  const formattedName = category
+    ? category.charAt(0).toUpperCase() + category.slice(1).replace(/-/g, " ")
+    : "Category";
+
+  // Breadcrumb structured data for search engine rich results
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: `${siteUrl}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Products",
+        item: `${siteUrl}/products`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: formattedName,
+        item: `${siteUrl}/products/${category}`,
+      },
+    ],
   };
-
-  const { data, isLoading, isError, isFetching } = useQuery({
-    queryKey: ["product-list", category, queryParams],
-    queryFn: getProductsByCategory,
-    placeholderData: keepPreviousData,
-    staleTime: 1000 * 60 * 10,
-  });
 
   return (
     <>
-      <section className="max-w-360 mx-auto px-5 mb-5">
-        {isLoading ? (
-          <>
-            <div className="breadcrumbs text-sm">
-              <ul>
-                {Array.from({ length: 2 }).map((_, i) => (
-                  <li key={i}>
-                    <div className="skeleton w-16 xs:w-20 h-6"></div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="skeleton w-56 h-10"></div>
-            <div className="skeleton w-full h-6 my-3"></div>
-            <div className="skeleton w-full max-w-3/4 h-6"></div>
-          </>
-        ) : (
-          <>
-            <ShopNav
-              category={data?.category?.name}
-              slug={data?.category?.slug}
-            />
-            <ProductHeader
-              title={data?.category?.name}
-              description={data?.category?.description}
-            />
-          </>
-        )}
-      </section>
-      <section className="max-w-360 mx-auto px-5">
-        <ProductSidebar
-          isLoading={isLoading}
-          isFetching={isFetching}
-          total={data?.pagination?.total}
-          products={data?.products}
-        />
-      </section>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <CategoryProductView category={category} />
     </>
   );
-};
-
-export default page;
+}

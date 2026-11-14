@@ -72,6 +72,8 @@ const ProductCard = ({ product }) => {
           <img
             src={imageUrl}
             alt={product?.title || "Pet Product"}
+            width={300}
+            height={300}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             loading="lazy"
           />

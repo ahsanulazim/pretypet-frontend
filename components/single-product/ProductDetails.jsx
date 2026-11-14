@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
+import { event as trackEvent } from "@/lib/fpixel";
 import ProductGallery from "./ProductGallery";
 import ProductInfo from "./ProductInfo";
 import ProductDescription from "./ProductDescription";
@@ -47,6 +48,38 @@ export default function ProductDetails({
   const [activeTab, setActiveTab] = useState("description");
 
   const attributes = useMemo(() => getNormalizedAttributes(product), [product]);
+
+  useEffect(() => {
+    if (!product?._id) return;
+
+    const productId =
+      typeof product._id === "string"
+        ? product._id
+        : product._id?.$oid || String(product._id);
+
+    const price = Number(product.basePrice ?? product.price ?? 0);
+
+    trackEvent("ViewContent", {
+      content_name: product.title || "",
+      content_category:
+        categoryInfo?.name ||
+        (typeof product.category === "string"
+          ? product.category
+          : product.category?.name) ||
+        "Pet Products",
+      content_ids: [productId],
+      content_type: "product",
+      value: price,
+      currency: "USD",
+    });
+  }, [
+    product?._id,
+    product?.title,
+    categoryInfo?.name,
+    product?.basePrice,
+    product?.price,
+    product?.category,
+  ]);
 
   /*
   |--------------------------------------------------------------------------

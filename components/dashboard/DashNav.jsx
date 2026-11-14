@@ -1,10 +1,11 @@
 import Link from "next/link";
 import UserDropdown from "./UserDropdown";
 import Image from "next/image";
+import NotificationBell from "./NotificationBell";
 
 const DashNav = () => {
   return (
-    <header className="navbar bg-base-100 sticky top-0 z-10">
+    <header className="navbar bg-base-100 sticky top-0 z-10 px-2 sm:px-4">
       <div className="flex-1 flex items-center">
         <label
           htmlFor="my-drawer-4"
@@ -37,7 +38,8 @@ const DashNav = () => {
           />
         </Link>
       </div>
-      <div className="flex-none">
+      <div className="flex-none flex items-center gap-2">
+        <NotificationBell recipient="admin" />
         <UserDropdown />
       </div>
     </header>

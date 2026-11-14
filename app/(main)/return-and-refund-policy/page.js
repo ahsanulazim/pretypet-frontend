@@ -15,9 +15,12 @@ import {
 } from "react-icons/lu";
 
 export const metadata = {
-  title: "Return & Refund Policy | PrettyPet",
+  title: "Return & Refund Policy | PretyPet",
   description:
-    "Learn about PrettyPet's 14-day hassle-free return and refund policy. Easy returns, damaged item replacement, and quick refund processing.",
+    "Learn about PretyPet's 14-day hassle-free return and refund policy. Easy returns, damaged item replacement, and quick refund processing.",
+  alternates: {
+    canonical: "/return-and-refund-policy",
+  },
 };
 
 const returnSteps = [

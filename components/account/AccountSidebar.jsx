@@ -19,6 +19,7 @@ import {
   LuUser,
 } from "react-icons/lu";
 import { toast } from "react-toastify";
+import NotificationBell from "@/components/dashboard/NotificationBell";
 
 const navItems = [
   {
@@ -113,6 +114,11 @@ const AccountSidebar = () => {
               </span>
             </div>
           </div>
+          {email && (
+            <div className="flex-shrink-0">
+              <NotificationBell recipient={email} />
+            </div>
+          )}
         </div>
       </div>
 
