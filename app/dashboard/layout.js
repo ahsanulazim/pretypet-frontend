@@ -19,6 +19,7 @@ import {
   LuUser,
   LuSparkles,
   LuBell,
+  LuRadar,
 } from "react-icons/lu";
 
 const Layout = ({ children }) => {
@@ -171,6 +172,16 @@ const Layout = ({ children }) => {
                 {/* Home icon */}
                 <LuPackageSearch className="my-1.5 inline-block size-4" />
                 <span className="is-drawer-close:hidden">CJ Dropshipping</span>
+              </ActiveLink>
+            </li>
+            <li>
+              <ActiveLink
+                href="/dashboard/scraped-products"
+                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                dataTip="Scraped Products"
+              >
+                <LuRadar className="my-1.5 inline-block size-4" />
+                <span className="is-drawer-close:hidden">Scraped Products</span>
               </ActiveLink>
             </li>
             <li>
