@@ -238,10 +238,10 @@ function PaymentSuccessContent() {
         <p className="text-xs text-zinc-400 mt-6">
           Need assistance with your order? Contact us at{" "}
           <a
-            href="mailto:support@pretypet.com"
+            href="mailto:contact@pretypet.com"
             className="text-main hover:underline"
           >
-            support@pretypet.com
+            contact@pretypet.com
           </a>
         </p>
       </div>

@@ -27,7 +27,7 @@ const returnSteps = [
   {
     step: "01",
     title: "Initiate Return Request",
-    desc: "Reach out to our support team at support@prettypet.com or via our Contact Us page within 14 days of delivery with your order ID and reason.",
+    desc: "Reach out to our support team at contact@pretypet.com or via our Contact Us page within 14 days of delivery with your order ID and reason.",
   },
   {
     step: "02",
@@ -114,7 +114,7 @@ const policySections = [
         </p>
         <div className="bg-base-200 p-4 rounded-xl mt-3 text-sm text-base-content/80 space-y-2">
           <p>
-            • <strong>Notify Us Promptly:</strong> Contact us within <strong>48 hours</strong> of package arrival at <a href="mailto:support@prettypet.com" className="text-main font-semibold underline">support@prettypet.com</a>.
+            • <strong>Notify Us Promptly:</strong> Contact us within <strong>48 hours</strong> of package arrival at <a href="mailto:contact@pretypet.com" className="text-main font-semibold underline">contact@pretypet.com</a>.
           </p>
           <p>
             • <strong>Provide Evidence:</strong> Include your Order ID, a brief description, and clear photos showing the damaged product and outer packaging.
@@ -432,9 +432,9 @@ export default function ReturnAndRefundPolicyPage() {
               <div>
                 <p className="font-semibold text-sm text-base-content">PrettyPet Customer Care</p>
                 <p className="text-xs text-base-content/70 mt-0.5">
-                  Email: <a href="mailto:support@prettypet.com" className="text-main hover:underline font-medium">support@prettypet.com</a>
+                  Email: <a href="mailto:contact@pretypet.com" className="text-main hover:underline font-medium">contact@pretypet.com</a>
                 </p>
-                <p className="text-xs text-base-content/70">Phone: +1 (800) 555-7387 (Sun–Thu, 9 AM – 6 PM EST)</p>
+                <p className="text-xs text-base-content/70">Phone: +8801711710643</p>
               </div>
               <Link
                 href="/contact"

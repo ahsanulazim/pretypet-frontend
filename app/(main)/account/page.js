@@ -276,7 +276,7 @@ const AccountOverviewPage = () => {
           </div>
         </div>
         <Link
-          href="mailto:support@pretypet.com"
+          href="mailto:contact@pretypet.com"
           className="btn btn-ghost btn-sm text-main hover:bg-main/10 rounded-xl"
         >
           Contact Support

@@ -55,7 +55,7 @@ const OrderInvoiceModal = ({ order, isOpen, onClose }) => {
               <p className="text-xs text-base-content/60 mt-0.5">
                 Premium Pet Supplies & Nutrition
               </p>
-              <p className="text-xs text-base-content/60">support@pretypet.com</p>
+              <p className="text-xs text-base-content/60">contact@pretypet.com</p>
             </div>
             <div className="text-right">
               <span className="text-xs font-bold text-base-content/60 uppercase">
@@ -181,7 +181,7 @@ const OrderInvoiceModal = ({ order, isOpen, onClose }) => {
               Thank you for trusting PretyPet with your companion&apos;s happiness! 🐾
             </p>
             <p className="mt-0.5 text-[11px]">
-              If you have any questions regarding this invoice, contact support@pretypet.com.
+              If you have any questions regarding this invoice, contact contact@pretypet.com.
             </p>
           </div>
         </div>

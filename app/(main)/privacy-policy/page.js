@@ -301,8 +301,8 @@ export default function PrivacyPolicyPage() {
             <div className="pt-4 border-t border-base-200">
               <p className="text-xs text-base-content/60">
                 Have questions about your data rights? Reach out directly to our privacy officer at{" "}
-                <a href="mailto:privacy@prettypet.com" className="text-main font-semibold underline">
-                  privacy@prettypet.com
+                <a href="mailto:contact@pretypet.com" className="text-main font-semibold underline">
+                  contact@pretypet.com
                 </a>
               </p>
             </div>
@@ -352,15 +352,14 @@ export default function PrivacyPolicyPage() {
               <p><strong>Company:</strong> PrettyPet (Operated by Ayxal LLC)</p>
               <p>
                 <strong>Email:</strong>{" "}
-                <a href="mailto:privacy@prettypet.com" className="text-main hover:underline">
-                  privacy@prettypet.com
+                <a href="mailto:contact@pretypet.com" className="text-main hover:underline">
+                  contact@pretypet.com
                 </a>{" "}
                 /{" "}
-                <a href="mailto:support@prettypet.com" className="text-main hover:underline">
-                  support@prettypet.com
+                <a href="mailto:contact@pretypet.com" className="text-main hover:underline">
+                  contact@pretypet.com
                 </a>
               </p>
-              <p><strong>Hours of Operation:</strong> Sunday – Thursday, 9:00 AM – 6:00 PM</p>
               <p><strong>Website:</strong> <a href="https://ayxal.com" target="_blank" rel="noreferrer" className="text-main hover:underline">https://ayxal.com</a></p>
             </div>
           </section>

@@ -44,9 +44,9 @@ const page = () => {
             Need help? Contact our support team at{" "}
             <a
               className="link text-main link-hover"
-              href="mailto:support@ayxal.com"
+              href="mailto:contact@pretypet.com"
             >
-              support@ayxal.com
+              contact@pretypet.com
             </a>
           </p>
         </PaymentCard>

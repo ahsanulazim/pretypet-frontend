@@ -24,7 +24,6 @@ import {
   LuHeartHandshake,
   LuMail,
   LuPhone,
-  LuClock,
   LuArrowRight,
   LuLock,
 } from "react-icons/lu";
@@ -138,10 +137,6 @@ const Footer = () => {
                 >
                   +8801711710643
                 </a>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <LuClock className="size-4 text-main shrink-0" />
-                <span>Sun – Thu: 9:00 AM – 6:00 PM EST</span>
               </div>
             </div>
 

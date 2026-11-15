@@ -8,7 +8,6 @@ import {
   LuMail,
   LuPhone,
   LuMapPin,
-  LuClock,
   LuSend,
   LuMessageSquare,
   LuPackage,
@@ -23,19 +22,19 @@ const contactCards = [
   {
     icon: LuMail,
     title: "Email Us",
-    detail: "support@prettypet.com",
+    detail: "contact@pretypet.com",
     subdetail: "Average response: under 12 hours",
     actionText: "Send an Email",
-    href: "mailto:support@prettypet.com",
+    href: "mailto:contact@pretypet.com",
     color: "bg-emerald-50 text-emerald-600 border-emerald-100",
   },
   {
     icon: LuPhone,
     title: "Call or WhatsApp",
-    detail: "+1 (800) 555-7387",
-    subdetail: "Sun – Thu: 9:00 AM – 6:00 PM EST",
+    detail: "+8801711710643",
+    subdetail: "Available 24/7",
     actionText: "Call Support",
-    href: "tel:+18005557387",
+    href: "tel:+8801711710643",
     color: "bg-teal-50 text-teal-600 border-teal-100",
   },
   {
@@ -47,15 +46,6 @@ const contactCards = [
     href: "https://maps.google.com/?q=Delaware+USA",
     color: "bg-sky-50 text-sky-600 border-sky-100",
     external: true,
-  },
-  {
-    icon: LuClock,
-    title: "Working Hours",
-    detail: "Sunday – Thursday",
-    subdetail: "9:00 AM – 6:00 PM EST (Friday Closed)",
-    actionText: "Track Your Order",
-    href: "/account",
-    color: "bg-amber-50 text-amber-600 border-amber-100",
   },
 ];
 
@@ -170,7 +160,7 @@ export default function ContactContent() {
       </div>
 
       {/* Quick Contact Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {contactCards.map((card, idx) => {
           const Icon = card.icon;
           return (
