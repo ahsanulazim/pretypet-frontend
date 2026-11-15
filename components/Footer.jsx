@@ -124,19 +124,19 @@ const Footer = () => {
               <div className="flex items-center gap-2.5">
                 <LuMail className="size-4 text-main shrink-0" />
                 <a
-                  href="mailto:support@prettypet.com"
+                  href="mailto:contact@pretypet.com"
                   className="hover:text-white transition-colors"
                 >
-                  support@prettypet.com
+                  contact@pretypet.com
                 </a>
               </div>
               <div className="flex items-center gap-2.5">
                 <LuPhone className="size-4 text-main shrink-0" />
                 <a
-                  href="tel:+18005557387"
+                  href="tel:+8801711710643"
                   className="hover:text-white transition-colors"
                 >
-                  +1 (800) 555-PETS (+1 800-555-7387)
+                  +8801711710643
                 </a>
               </div>
               <div className="flex items-center gap-2.5">
